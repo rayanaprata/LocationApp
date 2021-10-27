@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MapKit
 import CoreLocation
 
 class ViewController: UIViewController {
@@ -16,19 +17,27 @@ class ViewController: UIViewController {
     // MARK: Outlets
     @IBOutlet weak var labelNorthSouth: UILabel!
     @IBOutlet weak var labelEastWest: UILabel!
+    @IBOutlet weak var map: MKMapView!
     
     // MARK: Overrides
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        setupLocation()
+        setupMap()
     }
 
     // MARK: Methods
+    
+    private func setupMap() {
+        map.userTrackingMode = .followWithHeading
+    }
+    
     private func setupLocation() {
         guard LocationManager.hasGPS() else { return }
         mLocation.delegate = self
         if LocationManager.isAuthorizedWhenInUse() {
-            mLocation.requestLocation()
+//            mLocation.requestLocation()
+            mLocation.startUpdatingLocation()
         } else {
             mLocation.requestWhenInUseAuthorization()
         }
@@ -78,7 +87,8 @@ extension ViewController: CLLocationManagerDelegate {
     // Executa quando o usuário muda a autorização
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if LocationManager.isAuthorizedWhenInUse() || LocationManager.isAuthorizedAlways() {
-            mLocation.requestLocation()
+//            mLocation.requestLocation()
+            mLocation.startUpdatingLocation()
         }
     }
     
